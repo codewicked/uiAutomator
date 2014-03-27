@@ -1,0 +1,30 @@
+<project name="UiAutomation" default="Sanity">
+	<property name="SDKPath" value="/Users/saket/Downloads/adt-bundle-mac-x86_64-20140321/sdk"/>
+	<property name="workspace" value="/Users/saket/Documents/workspace/com.navin.uiAutomatorExample"/>
+	
+	<target name="setup">
+		<echo> Creating ui-test project </echo>
+		<exec dir="${SDKPath}/tools" executable="./android">
+			<arg line="create uitest-project -n Sanity -t 1 -p ${workspace}"/>
+		</exec>
+
+		<echo> Running the ant build command </echo>
+		<exec dir="${workspace}" executable="ant">
+			<arg line="build"/>
+		</exec>
+
+		<echo> Pushing the jar to the device</echo>
+		<exec dir="${SDKPath}/platform-tools/" executable="./adb">
+			<arg line="push ${workspace}/bin/Sanity.jar /data/local/tmp/"/>
+		</exec>
+
+		<echo> Running the Sanity test </echo>
+		<exec dir="${SDKPath}/platform-tools" executable="./adb">
+			<arg line="shell uiautomator runtest Sanity.jar -c com.navin.uiAutomatorExample.Sanity"/>
+		</exec>
+
+	</target>
+
+	<target name="Sanity" depends="setup"/>
+</project>
+	
